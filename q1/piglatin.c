@@ -19,10 +19,7 @@ int main()
     
         // TODO: This might be different on windows !
         if(size == 1)
-        {
-            go = 0;
             break;
-        }
 
         // remove the new line at the end of input and replace with null terminator.       
         for(ptr = str; *ptr; ptr++)
