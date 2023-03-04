@@ -43,11 +43,9 @@ void riffle_once(void* L, int len, int size, void* work)
 
         int choice = rand() % 2;
         if(choice)
-        {
             *work_ptr++ = *left--;
-        } else {
+        else
             *work_ptr++ = *right++;
-        }
     }
     
     // adding remaining cards to deck
