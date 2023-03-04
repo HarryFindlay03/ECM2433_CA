@@ -4,6 +4,11 @@
 
 int main()
 {
+    printf("=============================\n");
+    printf("ENGLISH TO PIGLATIN CONVERTER\n");
+    printf("=============================\n");
+    printf("\n\n");
+
     int go = 1;
     while(go) {
         char str[80]; 
@@ -13,16 +18,12 @@ int main()
 
         // if an empty line has been inputted then exit 
         char* ptr;
-        int size = 0;
-        for(ptr = str; *ptr; ptr++)
-            size++;
-    
-        // TODO: This might be different on windows !
-        if(size == 1)
+        ptr = str;
+        if(*ptr == '\n' | *ptr == '\r')
             break;
 
-        // remove the new line at the end of input and replace with null terminator.       
-        for(ptr = str; *ptr; ptr++)
+        // remove the new line at the end of a valid input and replace with null terminator.       
+        for(; *ptr; ptr++)
         {
             if(*ptr == '\n' | *ptr == '\r')
                 *ptr = '\0';
@@ -32,6 +33,7 @@ int main()
         char* token;
         token = strtok(str, s);
 
+        printf("\nOUTPUT: ");
         while(token != NULL)
         {
             char* pig_word = pig(token);
@@ -41,10 +43,9 @@ int main()
             printf(" ");
             token = strtok(NULL, s);
         }
-        printf("\n");
-        size = 0;
+        printf("\n\n\n");
     }
     
-    printf("Thank you, exiting...\n");
+    printf("\n\nThank you, exiting...\n");
     return 0;
 }
