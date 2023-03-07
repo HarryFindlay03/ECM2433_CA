@@ -50,6 +50,11 @@ char* pig(char* word)
         {
             if(*q == 'Y' | *q == 'y')
                 break;
+            if(*q == '\0')
+            {
+                printf("That is a funny looking word, it has no vowels !\n");
+                break; 
+            }
 
             *y++ = *q++;
         }
@@ -69,7 +74,7 @@ char* pig(char* word)
         for(q = append_word; *q;)
             *x++ = *q++;
         
-        return return_word;
+        return to_lower(return_word);
     } else {
         // It is a vowel to start
         for(x = return_word;*q;)
@@ -79,6 +84,18 @@ char* pig(char* word)
         for(q = append_word; *q;)
             *x++ = *q++;
 
-        return return_word;
+        return to_lower(return_word);
     }
+}
+
+char* to_lower(char* word)
+{
+    char* word_ptr;
+    for(word_ptr = word; *word_ptr; word_ptr++)
+    {
+        if(*word_ptr < 97 && *word_ptr >= 65)
+            *word_ptr += 32;
+    }
+
+    return word;
 }
