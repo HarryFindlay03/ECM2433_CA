@@ -2,7 +2,7 @@
 
 int main()
 {
-    int L[20] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+    int L[13] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
     int* work = (int *)malloc(sizeof(int) * (sizeof(L) / sizeof(L[0])));
     riffle_once(&L[0], 13, sizeof(int), work);
 
@@ -12,7 +12,8 @@ int main()
 
     // output of shuffled numbers. 
     int i;
-    for(i = 0; i < 12; i++)
+    int len = sizeof(L) / sizeof(L[0]);
+    for(i = 0; i < len; i++)
         printf("num: %d\n", *work++);
 }
 
@@ -39,11 +40,13 @@ void riffle_once(void* L, int len, int size, void* work)
         if(left == start)
         {
             *work_ptr = *left;
+            work_ptr += size;
             break;
         }
         if(right == end)
         {
             *work_ptr = *right;
+            work_ptr += size;
             break;
         }
 
