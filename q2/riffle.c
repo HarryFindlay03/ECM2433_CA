@@ -6,18 +6,21 @@ int main()
     int* work = (int *)malloc(sizeof(int) * (sizeof(L) / sizeof(L[0])));
     riffle_once(&L[0], 13, sizeof(int), work);
 
-    // char* greek[12] = { "alpha", "beta", "gamma", "delta", "epsilon", "zeta", "eta", "theta", "iota", "kappa", "lambda", "mu" };    
-    // char* work_greek[12] = {};
-    // riffle_once(&greek[0], 12, sizeof(greek[0]), &work_greek[0]);
+    char* greek[12] = { "alpha", "beta", "gamma", "delta", "epsilon", "zeta", "eta", "theta", "iota", "kappa", "lambda", "mu" };
+    char* work_greek = (char *)malloc(sizeof(greek) / sizeof(greek[0]));
+    riffle_once(&greek[0], 12, sizeof(greek[0]), work_greek);
 
     // output of shuffled numbers. 
     int i;
     for(i = 0; i < 13; i++)
-        printf("num: %d\n", *work++);
+        printf("num: %d\n", L[i]);
 
     // output of shuffled greek
-    // for(i = 0; i < 12; i++)
-    //     printf("word: %s", work_greek[i]);
+    for(i = 0; i < 12; i++)
+        printf("word: %s\n", greek[i]);
+
+    free(work);
+    free(work_greek);
 }
 
 void riffle_once(void* L, int len, int size, void* work)
@@ -86,5 +89,13 @@ void riffle_once(void* L, int len, int size, void* work)
             right += size;
         }
         *work_ptr = *right;
+    }
+
+    // Copy into L
+    for(start = L, work_ptr = work; start <= end;)
+    {
+        *start = *work_ptr;
+        start += size;
+        work_ptr += size;
     }
 }
