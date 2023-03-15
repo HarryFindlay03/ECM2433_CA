@@ -12,9 +12,12 @@ int main()
 
     // output of shuffled numbers. 
     int i;
-    int len = sizeof(L) / sizeof(L[0]);
-    for(i = 0; i < len; i++)
+    for(i = 0; i < 13; i++)
         printf("num: %d\n", *work++);
+
+    // output of shuffled greek
+    // for(i = 0; i < 12; i++)
+    //     printf("word: %s", work_greek[i]);
 }
 
 void riffle_once(void* L, int len, int size, void* work)

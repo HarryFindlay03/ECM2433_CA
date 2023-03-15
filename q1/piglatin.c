@@ -37,10 +37,7 @@ int main()
         while(token != NULL)
         {
             char* pig_word = pig(token);
-            for(;*pig_word;)
-                printf("%c", *pig_word++);
-
-            printf(" ");
+            printf("%s ", pig_word);
             token = strtok(NULL, s);
         }
         printf("\n\n\n");
