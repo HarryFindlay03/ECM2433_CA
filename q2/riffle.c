@@ -22,12 +22,18 @@ int main()
     // free(work);
     // free(work_greek);
     
-    riffle(&L[0], 13, sizeof(int), 10);
-    // output of shuffled numbers. 
-    int i;
-    for(i = 0; i < 13; i++)
-        printf("num: %d\n", L[i]);
+    // riffle(&L[0], 13, sizeof(int), 10);
+    // // output of shuffled numbers. 
+    // int i;
+    // for(i = 0; i < 13; i++)
+    //     printf("num: %d\n", L[i]);
 
+    if(check_shuffle(&L[0], 13, sizeof(int), &cmp))
+        printf("Shuffle works correctly!\n");
+    else
+        printf("Shuffle does not work :(");
+
+    return 0;
 }
 
 void riffle_once(void* L, int len, int size, void* work)
@@ -114,9 +120,56 @@ void riffle(void* L, int len, int size, int N)
     int i;
     for(i = 0; i < N; i++)
     {
-        printf("\n\ni: %d\n\n", i);
         riffle_once(L, len, size, work);
     }
 
     free(work);
+}
+
+int check_shuffle(void* L, int len, int size, int (*cmp)(void *, void *))
+{
+    // pointer to L
+    char* L_ptr;
+    
+    // Will store original list
+    void* base = malloc(size * len);
+    char* base_ptr;
+
+    // Copy original into base
+    int i;
+    for(i = 0, L_ptr = L, base_ptr = base; i < len; i++)
+    {
+        *base_ptr = *L_ptr;
+        base_ptr += size;
+        L_ptr += size;
+    }
+
+    // riffle L
+    riffle(L, len, size, 30);
+
+    // Check that they are the same using cmp function
+    int same;
+    for(i = 0, L_ptr = L; i < len; i++, L_ptr += size)
+    {
+        same = 0;
+        int j;
+        for(j = 0, base_ptr = base; j < len; j++, base_ptr += size)
+        {
+            if(cmp(L_ptr, base_ptr))
+            {
+                same = 1;
+                break;
+            }
+        }
+        if(!same)
+            return same;
+    }
+    return same;
+}
+
+int cmp(void* first, void* second)
+{
+    int* i1 = (int *)first;
+    int* i2 = (int *)second;
+    return *i1 == *i2;
 }
