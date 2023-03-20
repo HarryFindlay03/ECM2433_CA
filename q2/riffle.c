@@ -1,40 +1,40 @@
 #include "riffle.h"
 
-int main()
-{
-    int L[13] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
-    // int* work = (int *)malloc(sizeof(int) * (sizeof(L) / sizeof(L[0])));
-    // riffle_once(&L[0], 13, sizeof(int), work);
-    //
-    // char* greek[12] = { "alpha", "beta", "gamma", "delta", "epsilon", "zeta", "eta", "theta", "iota", "kappa", "lambda", "mu" };
-    // char* work_greek = (char *)malloc(sizeof(greek) / sizeof(greek[0]));
-    // riffle_once(&greek[0], 12, sizeof(greek[0]), work_greek);
-    //
-    // // output of shuffled numbers. 
-    // int i;
-    // for(i = 0; i < 13; i++)
-    //     printf("num: %d\n", L[i]);
-    //
-    // // output of shuffled greek
-    // for(i = 0; i < 12; i++)
-    //     printf("word: %s\n", greek[i]);
-    //
-    // free(work);
-    // free(work_greek);
-    
-    // riffle(&L[0], 13, sizeof(int), 10);
-    // // output of shuffled numbers. 
-    // int i;
-    // for(i = 0; i < 13; i++)
-    //     printf("num: %d\n", L[i]);
-
-    if(check_shuffle(&L[0], 13, sizeof(int), &cmp))
-        printf("Shuffle works correctly!\n");
-    else
-        printf("Shuffle does not work :(");
-
-    return 0;
-}
+// int main()
+// {
+//     int L[13] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+//     // int* work = (int *)malloc(sizeof(int) * (sizeof(L) / sizeof(L[0])));
+//     // riffle_once(&L[0], 13, sizeof(int), work);
+//     //
+//     // char* greek[12] = { "alpha", "beta", "gamma", "delta", "epsilon", "zeta", "eta", "theta", "iota", "kappa", "lambda", "mu" };
+//     // char* work_greek = (char *)malloc(sizeof(greek) / sizeof(greek[0]));
+//     // riffle_once(&greek[0], 12, sizeof(greek[0]), work_greek);
+//     //
+//     // // output of shuffled numbers. 
+//     // int i;
+//     // for(i = 0; i < 13; i++)
+//     //     printf("num: %d\n", L[i]);
+//     //
+//     // // output of shuffled greek
+//     // for(i = 0; i < 12; i++)
+//     //     printf("word: %s\n", greek[i]);
+//     //
+//     // free(work);
+//     // free(work_greek);
+//     
+//     // riffle(&L[0], 13, sizeof(int), 10);
+//     // // output of shuffled numbers. 
+//     // int i;
+//     // for(i = 0; i < 13; i++)
+//     //     printf("num: %d\n", L[i]);
+//
+//     if(check_shuffle(&L[0], 13, sizeof(int), &cmp))
+//         printf("Shuffle works correctly!\n");
+//     else
+//         printf("Shuffle does not work :(");
+//
+//     return 0;
+// }
 
 void riffle_once(void* L, int len, int size, void* work)
 {
@@ -132,8 +132,11 @@ int check_shuffle(void* L, int len, int size, int (*cmp)(void *, void *))
     char* L_ptr;
     
     // Will store original list
-    void* base = malloc(size * len);
+    char* base = malloc(size * len);
     char* base_ptr;
+
+    printf("TESTING: %s\n", L);
+    
 
     // Copy original into base
     int i;
@@ -143,7 +146,7 @@ int check_shuffle(void* L, int len, int size, int (*cmp)(void *, void *))
         base_ptr += size;
         L_ptr += size;
     }
-
+    
     // riffle L
     riffle(L, len, size, 30);
 
@@ -155,6 +158,7 @@ int check_shuffle(void* L, int len, int size, int (*cmp)(void *, void *))
         int j;
         for(j = 0, base_ptr = base; j < len; j++, base_ptr += size)
         {
+            printf("Comparing %s and %s\n", L_ptr, base_ptr);
             if(cmp(L_ptr, base_ptr))
             {
                 same = 1;
@@ -162,8 +166,10 @@ int check_shuffle(void* L, int len, int size, int (*cmp)(void *, void *))
             }
         }
         if(!same)
+            free(base);
             return same;
     }
+    free(base);
     return same;
 }
 
