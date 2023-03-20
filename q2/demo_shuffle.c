@@ -41,15 +41,15 @@ int main()
         printf("%s, ", greek[i]);
     printf("%s\n\n", greek[len_greek-1]);
     
-    // if(check_shuffle(&L_checkshuffle[0], len_L, sizeof(int), &cmp))
-    //     printf("Shuffling nums: SUCCESS\n");
-    // else
-    //     printf("Shuffling nums: FAILURE\n");
-    
-    if(check_shuffle(greek_checkshuffle[0], len_greek, sizeof(greek_checkshuffle[0]), &cmp))
-        printf("Shuffling greek: SUCCESS\n");
+    if(check_shuffle(&L_checkshuffle[0], len_L, sizeof(int), &cmp))
+        printf("Shuffling nums: SUCCESS\n");
     else
-        printf("Shuffling greek: FAILURE\n");
+        printf("Shuffling nums: FAILURE\n");
+    
+    // if(check_shuffle(&greek_checkshuffle[0], len_greek, sizeof(greek_checkshuffle[0]), &cmp))
+    //     printf("Shuffling greek: SUCCESS\n");
+    // else
+    //     printf("Shuffling greek: FAILURE\n");
 
     return 0;
 }

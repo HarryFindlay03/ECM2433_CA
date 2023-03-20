@@ -133,18 +133,27 @@ int check_shuffle(void* L, int len, int size, int (*cmp)(void *, void *))
     
     // Will store original list
     char* base = malloc(size * len);
-    char* base_ptr;
-
-    printf("TESTING: %s\n", L);
-    
+    char* base_ptr = base;
 
     // Copy original into base
+    // int i;
+    // for(i = 0, L_ptr = L, base_ptr = base; i < len; i++)
+    // {
+    //     printf("base pointer: %s\n", base_ptr);
+    //     printf(" L pointer: %s\n", L_ptr);
+    //     *base_ptr = *L_ptr;
+    //     base_ptr += size;
+    //     L_ptr += size;
+    // }
     int i;
-    for(i = 0, L_ptr = L, base_ptr = base; i < len; i++)
+    char* start = L;
+    char* end = L + ((len-1) * size);
+
+    while(start <= end)
     {
-        *base_ptr = *L_ptr;
+        *base_ptr = *start;
+        start += size;
         base_ptr += size;
-        L_ptr += size;
     }
     
     // riffle L
@@ -158,7 +167,6 @@ int check_shuffle(void* L, int len, int size, int (*cmp)(void *, void *))
         int j;
         for(j = 0, base_ptr = base; j < len; j++, base_ptr += size)
         {
-            printf("Comparing %s and %s\n", L_ptr, base_ptr);
             if(cmp(L_ptr, base_ptr))
             {
                 same = 1;
@@ -166,8 +174,10 @@ int check_shuffle(void* L, int len, int size, int (*cmp)(void *, void *))
             }
         }
         if(!same)
+        {
             free(base);
             return same;
+        }
     }
     free(base);
     return same;
