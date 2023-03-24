@@ -1,41 +1,5 @@
 #include "riffle.h"
 
-// int main()
-// {
-//     int L[13] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
-//     // int* work = (int *)malloc(sizeof(int) * (sizeof(L) / sizeof(L[0])));
-//     // riffle_once(&L[0], 13, sizeof(int), work);
-//     //
-//     // char* greek[12] = { "alpha", "beta", "gamma", "delta", "epsilon", "zeta", "eta", "theta", "iota", "kappa", "lambda", "mu" };
-//     // char* work_greek = (char *)malloc(sizeof(greek) / sizeof(greek[0]));
-//     // riffle_once(&greek[0], 12, sizeof(greek[0]), work_greek);
-//     //
-//     // // output of shuffled numbers. 
-//     // int i;
-//     // for(i = 0; i < 13; i++)
-//     //     printf("num: %d\n", L[i]);
-//     //
-//     // // output of shuffled greek
-//     // for(i = 0; i < 12; i++)
-//     //     printf("word: %s\n", greek[i]);
-//     //
-//     // free(work);
-//     // free(work_greek);
-//     
-//     // riffle(&L[0], 13, sizeof(int), 10);
-//     // // output of shuffled numbers. 
-//     // int i;
-//     // for(i = 0; i < 13; i++)
-//     //     printf("num: %d\n", L[i]);
-//
-//     if(check_shuffle(&L[0], 13, sizeof(int), &cmp))
-//         printf("Shuffle works correctly!\n");
-//     else
-//         printf("Shuffle does not work :(");
-//
-//     return 0;
-// }
-
 void riffle_once(void* L, int len, int size, void* work)
 {
     // work pointer to set values in work
@@ -136,18 +100,10 @@ int check_shuffle(void* L, int len, int size, int (*cmp)(void *, void *))
     char* base_ptr = base;
 
     // Copy original into base
-    // int i;
-    // for(i = 0, L_ptr = L, base_ptr = base; i < len; i++)
-    // {
-    //     printf("base pointer: %s\n", base_ptr);
-    //     printf(" L pointer: %s\n", L_ptr);
-    //     *base_ptr = *L_ptr;
-    //     base_ptr += size;
-    //     L_ptr += size;
-    // }
-    int i;
     char* start = L;
     char* end = L + ((len-1) * size);
+    
+    printf("TESTING: %c\n", *start);
 
     while(start <= end)
     {
@@ -160,6 +116,7 @@ int check_shuffle(void* L, int len, int size, int (*cmp)(void *, void *))
     riffle(L, len, size, 30);
 
     // Check that they are the same using cmp function
+    int i;
     int same;
     for(i = 0, L_ptr = L; i < len; i++, L_ptr += size)
     {
@@ -167,7 +124,7 @@ int check_shuffle(void* L, int len, int size, int (*cmp)(void *, void *))
         int j;
         for(j = 0, base_ptr = base; j < len; j++, base_ptr += size)
         {
-            if(cmp(L_ptr, base_ptr))
+            if(cmp(L_ptr, base_ptr) == 0)
             {
                 same = 1;
                 break;
@@ -188,4 +145,19 @@ int cmp(void* first, void* second)
     int* i1 = (int *)first;
     int* i2 = (int *)second;
     return *i1 == *i2;
+}
+
+int cmp_ints(int* first, int* second)
+{
+    if(*first == *second)
+        return 0;
+    else if(*first > *second)
+        return 1;
+    else
+        return -1;
+}
+
+int cmp_strings(char* first, char* second)
+{
+    return strcmp(first, second);
 }
