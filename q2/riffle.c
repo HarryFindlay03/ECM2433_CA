@@ -93,38 +93,28 @@ void riffle(void* L, int len, int size, int N)
 int check_shuffle(void* L, int len, int size, int (*cmp)(void *, void *))
 {
     // pointer to L
-    char* L_ptr;
+    char** L_ptr;
     
     // Will store original list
-    char* base = malloc(size * len);
-    char* base_ptr = base;
+    char** base = malloc(size * len);
+    char** base_ptr = base;
 
-    // Copy original into base
-    char* start = L;
-    char* end = L + ((len-1) * size);
-    
-    printf("TESTING: %c\n", *start);
+    // copying L into base
+    memcpy(base, L, (len*size));
 
-    while(start <= end)
-    {
-        *base_ptr = *start;
-        start += size;
-        base_ptr += size;
-    }
-    
     // riffle L
     riffle(L, len, size, 30);
 
     // Check that they are the same using cmp function
     int i;
     int same;
-    for(i = 0, L_ptr = L; i < len; i++, L_ptr += size)
+    for(i = 0, L_ptr = L; i < len; i++, L_ptr++)
     {
         same = 0;
         int j;
-        for(j = 0, base_ptr = base; j < len; j++, base_ptr += size)
+        for(j = 0, base_ptr = base; j < len; j++, base_ptr++)
         {
-            if(cmp(L_ptr, base_ptr) == 0)
+            if(cmp(*L_ptr, *base_ptr) == 0)
             {
                 same = 1;
                 break;
