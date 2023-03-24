@@ -13,7 +13,7 @@ int main()
     for(i = 0, ptr = L; i < len_L-1; i++, ptr++)
         printf("%d, ", *ptr);
     printf("%d\n\n", *ptr);
-    
+
     // Shuffle L
     // arr, len of arr, size of each item in the array, how many times to shuffle
     riffle(&L[0], len_L, sizeof(int), 30);
@@ -29,25 +29,27 @@ int main()
     char* greek_checkshuffle[12] = { "alpha", "beta", "gamma", "delta", "epsilon", "zeta", "eta", "theta", "iota", "kappa", "lambda", "mu" };
     int len_greek = sizeof(greek) / sizeof(greek[0]);
 
-    // printf("Original array: ");
-    // for(i = 0; i < len_greek-1; i++)
-    //     printf("%s, ", greek[i]);
-    // printf("%s\n\n", greek[len_greek-1]);
-    //
-    // riffle(&greek[0], len_greek, sizeof(greek[0]), 30);
-    //
-    // printf("Shuffled array: ");
-    // for(i = 0; i < len_greek-1; i++)
-    //     printf("%s, ", greek[i]);
-    // printf("%s\n\n", greek[len_greek-1]);
- 
+    printf("Original array: ");
+    for(i = 0; i < len_greek-1; i++)
+        printf("%s, ", greek[i]);
+    printf("%s\n\n", greek[len_greek-1]);
 
+    riffle(&greek[0], len_greek, sizeof(greek[0]), 30);
 
-    if(check_shuffle(&greek_checkshuffle[0], len_greek, sizeof(greek[0]), &cmp_strings))
-        printf("Shuffling words: SUCCESS\n");
-    else
-        printf("Shuffling words: FAILURE\n");
+    printf("Shuffled array: ");
+    for(i = 0; i < len_greek-1; i++)
+        printf("%s, ", greek[i]);
+    printf("%s\n\n", greek[len_greek-1]);
     
+    if(check_shuffle(&L_checkshuffle[0], len_L, sizeof(int), &cmp_ints))
+        printf("Shuffling nums: SUCESS\n");
+    else
+        printf("Shuffling nums: FAILURE\n");
+    
+    // if(check_shuffle(&greek_checkshuffle[0], len_greek, sizeof(greek[0]), &cmp_strings))
+    //     printf("Shuffling words: SUCCESS\n");
+    // else
+    //     printf("Shuffling words: FAILURE\n");
     return 0;
 }
 
