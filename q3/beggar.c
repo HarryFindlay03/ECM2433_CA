@@ -57,7 +57,6 @@ int beggar(int Nplayers, int *deck, int talkative)
         players[i].bottom->prevCard = NULL;
         players[i].top = &playing_deck[i];
     }
-    printf("\n\n!!!!!!!!!!! I = %d\n\n", i);
     for(; i < (52 - Nplayers); i++) // dealing out the bulk of the cards
     {
         CARD* temp = players[i % Nplayers].top;
@@ -66,28 +65,21 @@ int beggar(int Nplayers, int *deck, int talkative)
         // setting previous card to (previous) top
         players[i % Nplayers].top->prevCard = temp;
     }
-    printf("\n\n!!!!!!!!!!! I = %d\n\n", i);
     for(; i < 52; i++) // setting the remaining cards and nextCard pointer to null
     {
-        printf("Setting player %d card %d\n", i % Nplayers, playing_deck[i].val);
         CARD* temp = players[i % Nplayers].top;
         players[i % Nplayers].top->nextCard = &playing_deck[i];
-        players[i & Nplayers].top = &playing_deck[i];
+        players[i % Nplayers].top = &playing_deck[i];
         players[i % Nplayers].top->prevCard = temp;
         players[i % Nplayers].top->nextCard = NULL;
     }
 
-    // Checking that the dealing worked
-    for(i = 0; i < Nplayers; i++)
-    {
-        while(!(players[i].bottom->nextCard == NULL))
-        {
-            printf("Player [%d] Hand: Current address: %p  Next Card address: %p Previous card address: %p  value: %d\n",i,  players[i].bottom, players[i].bottom->nextCard, players[i].bottom->prevCard, players[i].bottom->val);
-            // printf("Player [%d] Hand: %d\n", i, players[i].bottom->val);
-            players[i].bottom = players[i].bottom->nextCard;
-        }
-        printf("Player [%d] Hand: Current address: %p  Next Card address: %p Previous card address: %p  value: %d\n",i,  players[i].bottom, players[i].bottom->nextCard, players[i].bottom->prevCard, players[i].bottom->val);
-    }
+    printf("TESTING => bottom card: %p, bottom next card: %p bottom previous card: %p\n", players[0].bottom, players[0].bottom->nextCard, players[0].bottom->prevCard);
+    players[0].bottom = players[0].bottom->nextCard;
+    printf("TESTING => bottom card: %p, bottom next card: %p bottom previous card: %p\n", players[0].bottom, players[0].bottom->nextCard, players[0].bottom->prevCard);
+    
+    players[0].bottom = players[0].bottom->nextCard;
+    printf("TESTING => bottom card: %p, bottom next card: %p bottom previous card: %p\n", players[0].bottom, players[0].bottom->nextCard, players[0].bottom->prevCard);
 
     return 0;
 }
