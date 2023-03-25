@@ -31,7 +31,7 @@ int main()
     // gsl library install needed for this
     // shuffle(deck, 52,  time(0));
     
-    int result = beggar(4, deck, 0);
+    int result = beggar(5, deck, 0);
 
 }
 
@@ -57,18 +57,24 @@ int beggar(int Nplayers, int *deck, int talkative)
         players[i].bottom->prevCard = NULL;
         players[i].top = &playing_deck[i];
     }
-    for(j = i; i < ((52 / Nplayers) * Nplayers); i++, j++) // dealing out the bulk of the cards
+    printf("\n\n!!!!!!!!!!! I = %d\n\n", i);
+    for(; i < (52 - Nplayers); i++) // dealing out the bulk of the cards
     {
         CARD* temp = players[i % Nplayers].top;
-        players[i % Nplayers].top->nextCard = &playing_deck[j];
-        players[i % Nplayers].top = &playing_deck[j];
+        players[i % Nplayers].top->nextCard = &playing_deck[i];
+        players[i % Nplayers].top = &playing_deck[i];
         // setting previous card to (previous) top
         players[i % Nplayers].top->prevCard = temp;
     }
-    for(; j < 52; j++) // setting the remaining cards and nextCard pointer to null
+    printf("\n\n!!!!!!!!!!! I = %d\n\n", i);
+    for(; i < 52; i++) // setting the remaining cards and nextCard pointer to null
     {
-        players[j & Nplayers].top = &playing_deck[j];
-        players[j % Nplayers].top->nextCard = NULL;
+        printf("Setting player %d card %d\n", i % Nplayers, playing_deck[i].val);
+        CARD* temp = players[i % Nplayers].top;
+        players[i % Nplayers].top->nextCard = &playing_deck[i];
+        players[i & Nplayers].top = &playing_deck[i];
+        players[i % Nplayers].top->prevCard = temp;
+        players[i % Nplayers].top->nextCard = NULL;
     }
 
     // Checking that the dealing worked
@@ -76,11 +82,11 @@ int beggar(int Nplayers, int *deck, int talkative)
     {
         while(!(players[i].bottom->nextCard == NULL))
         {
-            printf("Player [%d] Hand: Current address: %p  Next Card address: %p Previous card address: %p\n",i,  players[i].bottom, players[i].bottom->nextCard, players[i].bottom->prevCard);
+            printf("Player [%d] Hand: Current address: %p  Next Card address: %p Previous card address: %p  value: %d\n",i,  players[i].bottom, players[i].bottom->nextCard, players[i].bottom->prevCard, players[i].bottom->val);
             // printf("Player [%d] Hand: %d\n", i, players[i].bottom->val);
             players[i].bottom = players[i].bottom->nextCard;
         }
-        printf("Player [%d] Hand: Current address: %p  Next Card address: %p Previous card address: %p\n",i,  players[i].bottom, players[i].bottom->nextCard, players[i].bottom->prevCard);
+        printf("Player [%d] Hand: Current address: %p  Next Card address: %p Previous card address: %p  value: %d\n",i,  players[i].bottom, players[i].bottom->nextCard, players[i].bottom->prevCard, players[i].bottom->val);
     }
 
     return 0;
