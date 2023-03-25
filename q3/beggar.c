@@ -24,8 +24,8 @@ int main()
     for(i = 0; i < 52; i++)
         *deck_ptr++ = (i % 13) + 2; // 52 card deck, 2-14 in each suit.
 
-    for(i = 0, deck_ptr = deck; i < 52; i++, deck_ptr++)
-        printf("DECK: %d\n", *deck_ptr);
+    // for(i = 0, deck_ptr = deck; i < 52; i++, deck_ptr++)
+    //     printf("DECK: %d\n", *deck_ptr);
     
     // gsl library install needed for this
     // shuffle(deck, 52,  time(0));
@@ -37,29 +37,16 @@ int main()
 int beggar(int Nplayers, int *deck, int talkative)
 {
     int i;
-
     // creating CARD deck
-    CARD* playing_deck[52];
+    CARD playing_deck[52];
     for(i = 0; i < 51; i++)
     {
-        CARD* curr = playing_deck[i];
-        curr->val = deck[i];
-        curr->nextCard = playing_deck[i+1];
+        playing_deck[i].val = deck[i];
+        playing_deck[i].nextCard = &playing_deck[i+1];
+        printf("TESTING curr address: %p  val: %d  next card address: %p\n", &playing_deck[i], playing_deck[i].val, playing_deck[i].nextCard);
     }
-    playing_deck[51]->val = deck[51];
-    playing_deck[51]->nextCard = NULL;
+    playing_deck[51].val = deck[51];
+    playing_deck[51].nextCard = NULL;
 
-    for(i = 0; i < 52; i++)
-        printf("card val: %d\n", playing_deck[i]->val);
-
-    // creating players
-    PLAYER* players[Nplayers];
-    for(i = 0; i < Nplayers; i++)
-    {
-        PLAYER* player;
-        player->id = i;
-        player->top = NULL;
-        player->bottom = NULL;
-        players[i] = player;
-    }
+    return 0;
 }
