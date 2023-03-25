@@ -37,16 +37,45 @@ int main()
 int beggar(int Nplayers, int *deck, int talkative)
 {
     int i;
+    int j;
     // creating CARD deck
     CARD playing_deck[52];
-    for(i = 0; i < 51; i++)
-    {
+    for(i = 0; i < 52; i++)
         playing_deck[i].val = deck[i];
-        playing_deck[i].nextCard = &playing_deck[i+1];
-        printf("TESTING curr address: %p  val: %d  next card address: %p\n", &playing_deck[i], playing_deck[i].val, playing_deck[i].nextCard);
+
+    // creating players
+    PLAYER players[Nplayers];
+    for(i = 0; i < Nplayers; i++)
+        players[i].id = i;
+
+    // dealing out cards
+    for(i = 0; i < Nplayers; i++) // setting bottom and top pointers
+    {
+        players[i].bottom = &playing_deck[i];
+        players[i].top = &playing_deck[i];
     }
-    playing_deck[51].val = deck[51];
-    playing_deck[51].nextCard = NULL;
+    for(j = i; i < ((52 / Nplayers) * Nplayers); i++, j++) // dealing out the bulk of the cards
+    {
+        players[i % Nplayers].top->nextCard = &playing_deck[j];
+        players[i % Nplayers].top = &playing_deck[j];
+    }
+    for(; j < 52; j++) // setting the remaining cards and nextCard pointer to null
+    {
+        players[j & Nplayers].top = &playing_deck[j];
+        players[j % Nplayers].top->nextCard = NULL;
+    }
+
+    // Checking that the dealing worked
+    for(i = 0; i < Nplayers; i++)
+    {
+        while(!(players[i].bottom->nextCard == NULL))
+        {
+            printf("Player [%d] Hand: %d\n", i, players[i].bottom->val);
+            players[i].bottom = players[i].bottom->nextCard;
+        }
+
+        printf("Player [%d] Hand: %d\n", i, players[i].bottom->val);
+    }
 
     return 0;
 }
