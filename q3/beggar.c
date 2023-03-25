@@ -5,6 +5,7 @@ typedef struct card
 {
     int val;
     struct card *nextCard;
+    struct card *prevCard;
 } CARD;
 
 typedef struct player
@@ -38,6 +39,7 @@ int beggar(int Nplayers, int *deck, int talkative)
 {
     int i;
     int j;
+
     // creating CARD deck
     CARD playing_deck[52];
     for(i = 0; i < 52; i++)
@@ -52,12 +54,16 @@ int beggar(int Nplayers, int *deck, int talkative)
     for(i = 0; i < Nplayers; i++) // setting bottom and top pointers
     {
         players[i].bottom = &playing_deck[i];
+        players[i].bottom->prevCard = NULL;
         players[i].top = &playing_deck[i];
     }
     for(j = i; i < ((52 / Nplayers) * Nplayers); i++, j++) // dealing out the bulk of the cards
     {
+        CARD* temp = players[i % Nplayers].top;
         players[i % Nplayers].top->nextCard = &playing_deck[j];
         players[i % Nplayers].top = &playing_deck[j];
+        // setting previous card to (previous) top
+        players[i % Nplayers].top->prevCard = temp;
     }
     for(; j < 52; j++) // setting the remaining cards and nextCard pointer to null
     {
@@ -70,11 +76,11 @@ int beggar(int Nplayers, int *deck, int talkative)
     {
         while(!(players[i].bottom->nextCard == NULL))
         {
-            printf("Player [%d] Hand: %d\n", i, players[i].bottom->val);
+            printf("Player [%d] Hand: Current address: %p  Next Card address: %p Previous card address: %p\n",i,  players[i].bottom, players[i].bottom->nextCard, players[i].bottom->prevCard);
+            // printf("Player [%d] Hand: %d\n", i, players[i].bottom->val);
             players[i].bottom = players[i].bottom->nextCard;
         }
-
-        printf("Player [%d] Hand: %d\n", i, players[i].bottom->val);
+        printf("Player [%d] Hand: Current address: %p  Next Card address: %p Previous card address: %p\n",i,  players[i].bottom, players[i].bottom->nextCard, players[i].bottom->prevCard);
     }
 
     return 0;
