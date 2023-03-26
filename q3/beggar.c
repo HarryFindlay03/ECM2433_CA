@@ -43,6 +43,39 @@ int beggar(int Nplayers, int *deck, int talkative)
     int count = 0;
     while(1)
     {
+        // OUTPUT
+        PILE temp_pile = (*pile);
+        printf("Pile: ");
+        while(temp_pile.head != NULL)
+        {
+            printf(" %d", temp_pile.head->val);
+            temp_pile.head = temp_pile.head->nextCard;
+        }
+        printf("\n");
+
+        for(i = 0; i < Nplayers; i++)
+        {
+            PLAYER current_player = players[i];
+            if(i == count % Nplayers)
+            {
+                printf("*\t %d: ", i);
+                while(current_player.head != NULL)
+                {
+                    printf(" %d", current_player.head->val);
+                    current_player.head = current_player.head->nextCard;
+                }
+                printf("\n");
+                continue;
+            }
+            printf("\t %d: ", i);
+            while(current_player.head != NULL)
+            {
+                printf(" %d", current_player.head->val);
+                current_player.head = current_player.head->nextCard;
+            }
+            printf("\n");
+        }
+
         int penalty;
         if(pile->head != NULL)
             penalty = is_special(pile->head->val);
