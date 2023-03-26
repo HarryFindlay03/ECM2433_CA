@@ -43,11 +43,38 @@ int beggar(int Nplayers, int *deck, int talkative)
     int count = 0;
     while(1)
     {
-        if(pile->head != NULL && is_special(pile->head->val))
-        {
-            printf("VALUE: %d\n", is_special(pile->head->val));
-        }
+        printf("Player [%d] playing\n", count % Nplayers);
+        int penalty;
+        if(pile->head != NULL)
+            penalty = is_special(pile->head->val);
 
+        // removing cards from current players hand as they 'recieved' the penalty card
+        for(i = 0; i < penalty; i++)
+        {
+            push(&(pile->head), players[count % Nplayers].head->val);
+            delete_node(&(players[count % Nplayers].head), players[count % Nplayers].head);
+
+            if(players[count % Nplayers].head == NULL)
+            {
+                printf("GAME OVER\n");
+                return 0;
+            }
+
+        }
+        
+        // if penalty occured, append pile to previous player, continue play with player who picked up the cards
+        // TODO: clear the pile
+        if(penalty)
+        {
+            // adding cards to previous player (player who played the penalty card)
+            append_pile(&(players[(count-1) % Nplayers].head), pile->head);
+            printf("Player [%d] penalised\n", count % Nplayers);
+            
+            // clearing the pile
+
+            count--;
+            continue;
+        }
         // add the head card onto the pile.
         push(&(pile->head), players[count % Nplayers].head->val);
 
@@ -56,7 +83,7 @@ int beggar(int Nplayers, int *deck, int talkative)
 
         if(players[count % Nplayers].head == NULL)
         {
-            printf("GAME OVER\n");
+            printf("GAME OVER on player [%d]\n", count % Nplayers);
             break;
         }
         count++;
@@ -90,6 +117,20 @@ void append(CARD** head, int val)
     // change the next node of last node, and set new nodes prev
     last->nextCard = new_card;
     new_card->prevCard = last;
+
+    return;
+}
+
+void append_pile(CARD** player_head, CARD* pile_head)
+{
+    // traverse until last node
+    CARD* last = *player_head;
+    while(last->nextCard != NULL)
+        last = last->nextCard;
+
+    // set next node of last card to pile head
+    last->nextCard = pile_head;
+    pile_head->prevCard = last;
 
     return;
 }
