@@ -34,7 +34,18 @@ int beggar(int Nplayers, int *deck, int talkative)
     // for each card in deck append to players
     for(i = 0; i < 52; i++)
         append(&(players[i % Nplayers].head), deck[i]);
-    
+   
+    // TESTING
+    for(i = 0; i < Nplayers; i++)
+    {
+        while(players[i].head->nextCard != NULL)
+        {
+            printf("PLAYER [%d] holds card: %d\n", i, players[i].head->val);
+            players[i].head = players[i].head->nextCard;
+        }
+        printf("PLAYER [%d] holds card: %d\n", i, players[i].head->val);
+    }
+
     return 0;
 }
 
