@@ -41,13 +41,14 @@ int beggar(int Nplayers, int *deck, int talkative)
    
     // MAIN GAMEPLAY
     int count = 0;
+    int penalty;
     while(1)
     {
+        penalty = 0;
         // OUTPUT
         if(talkative)
         {
             PILE temp_pile = (*pile);
-            PILE tail = temp_pile;
             printf("Pile: ");
             while(temp_pile.head != NULL)
             {
@@ -80,7 +81,6 @@ int beggar(int Nplayers, int *deck, int talkative)
             }
         }
 
-        int penalty;
         if(pile->head != NULL)
             penalty = is_special(pile->head->val);
 
@@ -104,6 +104,7 @@ int beggar(int Nplayers, int *deck, int talkative)
             // adding cards to previous player (player who played the penalty card)
             PILE* temp_head = pile; // for clearing the pile later
             
+            printf("Player who played penalty card: %d\n",(count - 1) % Nplayers);
             while(pile->head->nextCard != NULL)
             {
                 append(&(players[(count - 1) % Nplayers].head), pile->head->val);
@@ -113,13 +114,14 @@ int beggar(int Nplayers, int *deck, int talkative)
             append(&(players[(count - 1) % Nplayers].head), pile->head->val);
 
             // clear the pile
-            while(temp_head->head->nextCard != NULL)
+            while(temp_head->head != NULL)
             {
                 delete_node(&(temp_head->head), temp_head->head);
             }
-            
+            pile->head = NULL;
             continue;
         }
+        
         // add the head card onto the pile.
         push(&(pile->head), players[count % Nplayers].head->val);
 
@@ -208,11 +210,15 @@ void delete_node(CARD** head, CARD* del)
 
     // change next only if node to be deleted is not NULL
     if(del->nextCard != NULL)
+    {
         del->nextCard->prevCard = del->prevCard;
+    }
 
     // change prev only if node to be deleted is not the first nodes
     if(del->prevCard != NULL)
+    {
         del->prevCard->nextCard = del->nextCard;
+    }
 
     free(del);
     return;
