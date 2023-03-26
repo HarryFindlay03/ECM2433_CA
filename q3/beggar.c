@@ -15,6 +15,12 @@ typedef struct player
     struct card *bottom;
 } PLAYER;
 
+typedef struct table
+{
+    struct card *top;
+    struct card *bottom;
+} TABLE;
+
 int main()
 {
     // Creating a deck of cards
@@ -24,10 +30,7 @@ int main()
     int* deck_ptr = deck;
     for(i = 0; i < 52; i++)
         *deck_ptr++ = (i % 13) + 2; // 52 card deck, 2-14 in each suit.
-
-    // for(i = 0, deck_ptr = deck; i < 52; i++, deck_ptr++)
-    //     printf("DECK: %d\n", *deck_ptr);
-    
+   
     // gsl library install needed for this
     // shuffle(deck, 52,  time(0));
     
@@ -74,12 +77,75 @@ int beggar(int Nplayers, int *deck, int talkative)
         players[i % Nplayers].top->nextCard = NULL;
     }
 
-    printf("TESTING => bottom card: %p, bottom next card: %p bottom previous card: %p\n", players[0].bottom, players[0].bottom->nextCard, players[0].bottom->prevCard);
-    players[0].bottom = players[0].bottom->nextCard;
-    printf("TESTING => bottom card: %p, bottom next card: %p bottom previous card: %p\n", players[0].bottom, players[0].bottom->nextCard, players[0].bottom->prevCard);
-    
-    players[0].bottom = players[0].bottom->nextCard;
-    printf("TESTING => bottom card: %p, bottom next card: %p bottom previous card: %p\n", players[0].bottom, players[0].bottom->nextCard, players[0].bottom->prevCard);
+
+    // MAIN GAME PLAY
+    int count = 1;
+    TABLE* table = (TABLE *)malloc(52 * sizeof(CARD));
+
+    // player 0 starts the game
+    table->top = players[0].top;
+    table->bottom = players[0].top;
+    table->bottom->nextCard = table->top;
+
+    // removing a card off of top of player 0's hand.
+    players[0].top = players[0].top->prevCard;
+
+    while(1)
+    {
+        if(table->top->val == 11) // jack is hit
+        {
+
+        }
+        else if(table->top->val == 12) // queen is hit
+        {
+
+        }
+        else if(table->top->val == 13) // king is hit
+        {
+
+        }
+        else if(table->top->val == 14) // ace is hit
+        {
+
+        }
+
+        // adding card to table
+        CARD* temp = table->top;
+        printf("TEMP: %p\n", temp);
+        table->top->nextCard = players[count % Nplayers].top;
+        table->top = players[count % Nplayers].top;
+
+        
+        // removing card from player hand
+        players[count % Nplayers].top = players[count % Nplayers].top->prevCard;
+        players[count % Nplayers].top->nextCard = NULL;
+        
+        if(players[count % Nplayers].top == players[count % Nplayers].bottom)
+        {
+            printf("GAME OVER on player [%d]\n", count % Nplayers);
+            table->top->nextCard = NULL;
+
+            while(!(table->bottom->nextCard == NULL))
+            {
+                printf("TABLE, current address: %p  next address: %p\n", table->bottom, table->bottom->nextCard);
+                table->bottom = table->bottom->nextCard;
+            }
+
+            for(i = 0; i < Nplayers; i++)
+            {
+                while(!(players[i].bottom->nextCard == NULL))
+                {
+                    printf("Player [%d] Hand: Current address: %p  Next Card address: %p Previous card address: %p\n",i,  players[i].bottom, players[i].bottom->nextCard, players[i].bottom->prevCard);
+                    players[i].bottom = players[i].bottom->nextCard;
+                }
+                printf("Player [%d] Hand: Current address: %p  Next Card address: %p Previous card address: %p\n",i,  players[i].bottom, players[i].bottom->nextCard, players[i].bottom->prevCard);
+            }
+            break;
+        }
+
+        count++;
+    }
 
     return 0;
 }
+
