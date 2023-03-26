@@ -17,10 +17,11 @@ typedef struct player
 
 typedef struct pile
 {
-    struct card *top;
+    struct card *head;
 } PILE;
 
 int beggar(int, int*, int);
 void append(CARD**, int);
-CARD* gen_cards(int*, int*); 
-int is_special(int*);
+void push(CARD**, int);
+void delete_node(CARD**, CARD*);
+int is_special(int);

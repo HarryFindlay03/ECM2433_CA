@@ -23,6 +23,10 @@ int beggar(int Nplayers, int *deck, int talkative)
     int i;
     int j;
 
+    // creating pile -> MAX could be 52 cards.
+    PILE* pile = malloc(sizeof(CARD) * 52);
+    pile->head = NULL;
+
     // creating players
     PLAYER* players = (PLAYER*)malloc(sizeof(PLAYER)*Nplayers);
     for(i = 0; i < Nplayers; i++)
@@ -35,15 +39,27 @@ int beggar(int Nplayers, int *deck, int talkative)
     for(i = 0; i < 52; i++)
         append(&(players[i % Nplayers].head), deck[i]);
    
-    // TESTING
-    for(i = 0; i < Nplayers; i++)
+    // MAIN GAMEPLAY
+    int count = 0;
+    while(1)
     {
-        while(players[i].head->nextCard != NULL)
+        if(pile->head != NULL && is_special(pile->head->val))
         {
-            printf("PLAYER [%d] holds card: %d\n", i, players[i].head->val);
-            players[i].head = players[i].head->nextCard;
+            printf("VALUE: %d\n", is_special(pile->head->val));
         }
-        printf("PLAYER [%d] holds card: %d\n", i, players[i].head->val);
+
+        // add the head card onto the pile.
+        push(&(pile->head), players[count % Nplayers].head->val);
+
+        // remove a card from the linked list. 
+        delete_node(&(players[count % Nplayers].head), players[count % Nplayers].head);
+
+        if(players[count % Nplayers].head == NULL)
+        {
+            printf("GAME OVER\n");
+            break;
+        }
+        count++;
     }
 
     return 0;
@@ -95,46 +111,36 @@ void push(CARD** head, int val)
     (*head) = new_card;
 }
 
-CARD* gen_cards(int* start, int* end)
+void delete_node(CARD** head, CARD* del)
 {
-    CARD* cards = (CARD *)malloc((end - start));
-    CARD* card_ptr = cards;
+    if(*head == NULL || del == NULL)
+        return;
 
-    printf("Start val: %d    end val: %d\n", *start, *end);
+    // if node to be deleted is head node
+    if(*head == del)
+        *head = del->nextCard;
 
-    for(;start < end;)
-        card_ptr++->val = *start++;
-    
-    int len = (end - start);
-    printf("LEN VALUE: %d\n", len);
-    cards[0].prevCard = NULL;
-    cards[0].nextCard = &cards[1];
+    // change next only if node to be deleted is not NULL
+    if(del->nextCard != NULL)
+        del->nextCard->prevCard = del->prevCard;
 
-    int i;
-    for(i = 1; i < (len - 1); i++)
-    {
-        cards[i].prevCard = &cards[i-1];
-        cards[i].nextCard = &cards[i+1];
-    }
-    cards[len-1].prevCard = &cards[len-2];
-    cards[len-1].nextCard = NULL;
+    // change prev only if node to be deleted is not the first nodes
+    if(del->prevCard != NULL)
+        del->prevCard->nextCard = del->nextCard;
 
-    card_ptr = cards;
-    for(i = 0; i < len; i++)
-        printf("TESTING GEN CARDS: %d\n", card_ptr++->val);
-
-    return cards;
+    free(del);
+    return;
 }
 
-int is_special(int* card)
+int is_special(int card)
 {
-    if(*card == 11)
+    if(card== 11)
         return 1;
-    else if(*card == 12)
+    else if(card == 12)
         return 2;
-    else if(*card == 13)
+    else if(card == 13)
         return 3;
-    else if(*card == 14)
+    else if(card == 14)
         return 4;
 
     return 0;
