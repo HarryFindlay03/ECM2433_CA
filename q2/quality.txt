@@ -1,0 +1,17 @@
+Riffle quality [0.497279] after shuffling [1] times with [30] trials
+Riffle quality [0.498639] after shuffling [2] times with [30] trials
+Riffle quality [0.500000] after shuffling [3] times with [30] trials
+Riffle quality [0.506122] after shuffling [4] times with [30] trials
+Riffle quality [0.504762] after shuffling [5] times with [30] trials
+Riffle quality [0.499320] after shuffling [6] times with [30] trials
+Riffle quality [0.540816] after shuffling [7] times with [30] trials
+Riffle quality [0.497959] after shuffling [8] times with [30] trials
+Riffle quality [0.489116] after shuffling [9] times with [30] trials
+Riffle quality [0.502721] after shuffling [10] times with [30] trials
+Riffle quality [0.495238] after shuffling [11] times with [30] trials
+Riffle quality [0.497279] after shuffling [12] times with [30] trials
+Riffle quality [0.504762] after shuffling [13] times with [30] trials
+Riffle quality [0.560544] after shuffling [14] times with [30] trials
+Riffle quality [0.491837] after shuffling [15] times with [30] trials
+
+From the above data, to achieve a good shuffle on array of length 50, it does not really matter how many times you riffle it. We can see that after shuffling 3 times

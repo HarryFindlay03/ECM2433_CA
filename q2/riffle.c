@@ -145,3 +145,69 @@ int cmp_strings(char** first, char** second)
 {
     return strcmp(*first, *second);
 }
+
+float quality(int* numbers, int len)
+{
+    int times = 0;
+    
+    int i;
+    for(i = 0; i < len-1; i++)
+    {
+        if(numbers[i+1] > numbers[i])
+            times += 1;
+    }
+    
+    // len-1 as n-1 adjacent pairs in list of length n.
+    float res = (float)times / ((float)len - 1);
+    return res;
+}
+
+void average_quality(int N, int shuffles, int trials)
+{
+    int i;
+    for(i = 1; i <= shuffles; i++)
+    {
+        float* average = (float *)malloc(sizeof(float) * trials);
+        float* avg_ptr = average;
+        int* nums = (int *)malloc(sizeof(int) * N);
+        int* ptr = nums;
+
+        // placing 0,...,N-1 into a list to be shuffled and quality checked.
+        int j;
+        for(j = 0; j < N; j++)
+            *ptr++ = j;
+        
+        // shuffling trials times
+        for(j = 0; j < trials; j++)
+        {
+            // copy into new array
+            int* to_shuffle = (int *)malloc(sizeof(int) * N);
+            memcpy(to_shuffle, nums, sizeof(int)*N);
+            
+            // riffle copied to array shuffles times.
+            riffle(to_shuffle, N, sizeof(int), i);
+
+            // add the quality to the average.
+            *avg_ptr++ = quality(to_shuffle, N);
+
+            free(to_shuffle);
+        }
+        
+        float qual = mean(average, trials);
+
+        printf("Riffle quality [%f] after shuffling [%d] times with [%d] trials\n", qual, i, trials);
+
+        free(nums);
+        free(average);
+    }
+}
+
+float mean(float* nums, int len)
+{
+    float total = 0;
+    int i;
+    for(i = 0; i < len; i++)
+        total += *nums++;
+
+    return total / (float)len;
+}

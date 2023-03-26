@@ -3,17 +3,17 @@
 
 int main()
 {
-    // Creating a deck of cards
+    // Creating a deck of cards// Creating a deck of cards
     int deck[52];
 
     int i;
     int* deck_ptr = deck;
     for(i = 0; i < 52; i++)
         *deck_ptr++ = (i % 13) + 2; // 52 card deck, 2-14 in each suit.
-   
+
     // gsl library install needed for this
     // shuffle(deck, 52,  time(0));
-    
+
     int result = beggar(5, deck, 1);
 
 }
@@ -38,7 +38,7 @@ int beggar(int Nplayers, int *deck, int talkative)
     // for each card in deck append to players
     for(i = 0; i < 52; i++)
         append(&(players[i % Nplayers].head), deck[i]);
-   
+
     // MAIN GAMEPLAY
     int count = 0;
     int penalty;
@@ -97,13 +97,13 @@ int beggar(int Nplayers, int *deck, int talkative)
             }
 
         }
-        
+
         // if penalty occured, append pile to previous player, continue play with player who picked up the cards
         if(penalty)
         {
             // adding cards to previous player (player who played the penalty card)
             PILE* temp_head = pile; // for clearing the pile later
-            
+
             printf("Player who played penalty card: %d\n",(count - 1) % Nplayers);
             while(pile->head->nextCard != NULL)
             {
@@ -121,7 +121,7 @@ int beggar(int Nplayers, int *deck, int talkative)
             pile->head = NULL;
             continue;
         }
-        
+
         // add the head card onto the pile.
         push(&(pile->head), players[count % Nplayers].head->val);
 
@@ -145,7 +145,7 @@ void append(CARD** head, int val)
     CARD* new_card = (CARD *)malloc(sizeof(CARD));
 
     CARD* last = *head;
-    
+
     new_card->val = val;
     new_card->nextCard = NULL;
 
@@ -191,7 +191,7 @@ void push(CARD** head, int val)
 
     new_card->nextCard = (*head);
     new_card->prevCard = NULL;
-    
+
     // make the old heads previous new_card if head is not null
     if((*head) != NULL)
         (*head)->prevCard = new_card;
