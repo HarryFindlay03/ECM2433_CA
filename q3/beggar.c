@@ -14,7 +14,7 @@ int main()
     // gsl library install needed for this
     // shuffle(deck, 52,  time(0));
     
-    int result = beggar(5, deck, 0);
+    int result = beggar(5, deck, 1);
 
 }
 
@@ -44,36 +44,40 @@ int beggar(int Nplayers, int *deck, int talkative)
     while(1)
     {
         // OUTPUT
-        PILE temp_pile = (*pile);
-        printf("Pile: ");
-        while(temp_pile.head != NULL)
+        if(talkative)
         {
-            printf(" %d", temp_pile.head->val);
-            temp_pile.head = temp_pile.head->nextCard;
-        }
-        printf("\n");
-
-        for(i = 0; i < Nplayers; i++)
-        {
-            PLAYER current_player = players[i];
-            if(i == count % Nplayers)
+            PILE temp_pile = (*pile);
+            PILE tail = temp_pile;
+            printf("Pile: ");
+            while(temp_pile.head != NULL)
             {
-                printf("*\t %d: ", i);
+                printf(" %d", temp_pile.head->val);
+                temp_pile.head = temp_pile.head->nextCard;
+            }
+            printf("\n");
+
+            for(i = 0; i < Nplayers; i++)
+            {
+                PLAYER current_player = players[i];
+                if(i == count % Nplayers)
+                {
+                    printf("*   %d: ", i);
+                    while(current_player.head != NULL)
+                    {
+                        printf(" %d", current_player.head->val);
+                        current_player.head = current_player.head->nextCard;
+                    }
+                    printf("\n");
+                    continue;
+                }
+                printf("    %d: ", i);
                 while(current_player.head != NULL)
                 {
                     printf(" %d", current_player.head->val);
                     current_player.head = current_player.head->nextCard;
                 }
                 printf("\n");
-                continue;
             }
-            printf("\t %d: ", i);
-            while(current_player.head != NULL)
-            {
-                printf(" %d", current_player.head->val);
-                current_player.head = current_player.head->nextCard;
-            }
-            printf("\n");
         }
 
         int penalty;
@@ -95,7 +99,6 @@ int beggar(int Nplayers, int *deck, int talkative)
         }
         
         // if penalty occured, append pile to previous player, continue play with player who picked up the cards
-        // TODO: clear the pile
         if(penalty)
         {
             // adding cards to previous player (player who played the penalty card)
@@ -106,6 +109,8 @@ int beggar(int Nplayers, int *deck, int talkative)
                 append(&(players[(count - 1) % Nplayers].head), pile->head->val);
                 pile->head = pile->head->nextCard;
             }
+            // append the final card
+            append(&(players[(count - 1) % Nplayers].head), pile->head->val);
 
             // clear the pile
             while(temp_head->head->nextCard != NULL)
@@ -113,7 +118,6 @@ int beggar(int Nplayers, int *deck, int talkative)
                 delete_node(&(temp_head->head), temp_head->head);
             }
             
-            count--;
             continue;
         }
         // add the head card onto the pile.
@@ -212,19 +216,6 @@ void delete_node(CARD** head, CARD* del)
 
     free(del);
     return;
-}
-
-void output(PILE* pile, PLAYER* players, int Nplayers)
-{
-    printf("Pile:   ");
-    if(pile->head == NULL)
-        return;
-    while(pile->head->nextCard != NULL)
-    {
-        printf(" ,%d", pile->head->val);
-        pile->head = pile->head->nextCard;
-    }
-    printf("\n");
 }
 
 int is_special(int card)
