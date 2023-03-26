@@ -15,11 +15,12 @@ typedef struct player
     struct card *bottom;
 } PLAYER;
 
-typedef struct table
+typedef struct pile
 {
     struct card *top;
-    struct card *bottom;
-} TABLE;
+} PILE;
+
+CARD* gen_cards(int*, int);
 
 int main()
 {
@@ -79,73 +80,78 @@ int beggar(int Nplayers, int *deck, int talkative)
 
 
     // MAIN GAME PLAY
-    int count = 1;
-    TABLE* table = (TABLE *)malloc(52 * sizeof(CARD));
-
-    // player 0 starts the game
-    table->top = players[0].top;
-    table->bottom = players[0].top;
-    table->bottom->nextCard = table->top;
-
-    // removing a card off of top of player 0's hand.
-    players[0].top = players[0].top->prevCard;
+    int count = 0;
+    int* pile = (int *)malloc(sizeof(int) * 52);
+    int* start_pile = pile;
+    int* end_pile = pile;
 
     while(1)
     {
-        if(table->top->val == 11) // jack is hit
+        if(*end_pile == 11) //jack
+        {
+            printf("TESTING\n");
+            *end_pile = players[count % Nplayers].top->val;
+            CARD* to_add = gen_cards(pile, ((end_pile - start_pile) / sizeof(int)));
+            end_pile = pile;
+
+            // adding the cards to the back of the player befores hand
+            CARD top_of_pile;
+            while(!(to_add->nextCard == NULL))
+                to_add++;
+
+            players[(count % Nplayers)-1].bottom->prevCard = to_add;
+            count++;
+            continue;
+        }
+        else if(*end_pile == 12) //queen
         {
 
         }
-        else if(table->top->val == 12) // queen is hit
+        else if(*end_pile == 13) //king
         {
 
         }
-        else if(table->top->val == 13) // king is hit
+        else if(*end_pile == 14) //ace
         {
 
         }
-        else if(table->top->val == 14) // ace is hit
-        {
+        end_pile++;
 
-        }
+        // adding cards to pile 
+        *end_pile = players[count % Nplayers].top->val;
 
-        // adding card to table
-        CARD* temp = table->top;
-        printf("TEMP: %p\n", temp);
-        table->top->nextCard = players[count % Nplayers].top;
-        table->top = players[count % Nplayers].top;
-
-        
         // removing card from player hand
         players[count % Nplayers].top = players[count % Nplayers].top->prevCard;
         players[count % Nplayers].top->nextCard = NULL;
-        
+
         if(players[count % Nplayers].top == players[count % Nplayers].bottom)
         {
-            printf("GAME OVER on player [%d]\n", count % Nplayers);
-            table->top->nextCard = NULL;
-
-            while(!(table->bottom->nextCard == NULL))
-            {
-                printf("TABLE, current address: %p  next address: %p\n", table->bottom, table->bottom->nextCard);
-                table->bottom = table->bottom->nextCard;
-            }
-
-            for(i = 0; i < Nplayers; i++)
-            {
-                while(!(players[i].bottom->nextCard == NULL))
-                {
-                    printf("Player [%d] Hand: Current address: %p  Next Card address: %p Previous card address: %p\n",i,  players[i].bottom, players[i].bottom->nextCard, players[i].bottom->prevCard);
-                    players[i].bottom = players[i].bottom->nextCard;
-                }
-                printf("Player [%d] Hand: Current address: %p  Next Card address: %p Previous card address: %p\n",i,  players[i].bottom, players[i].bottom->nextCard, players[i].bottom->prevCard);
-            }
+            printf("GAME OVER!\n");
             break;
         }
-
+        
         count++;
     }
 
     return 0;
 }
 
+CARD* gen_cards(int* pile, int len)
+{
+    CARD* cards = (CARD *)malloc(len * sizeof(CARD));
+    int i;
+    for(i = 0; i < len; i++)
+        cards[i].val = *pile++;
+
+    cards[0].prevCard = NULL;
+    cards[0].nextCard = &cards[1];
+    for(i = 1; i < len - 1; i++)
+    {
+        cards[i].prevCard = &cards[i-1];
+        cards[i].nextCard = &cards[i+1];
+    }
+    cards[len-1].prevCard = &cards[len-2];
+    cards[len-1].nextCard = NULL;
+
+    return cards;
+}
