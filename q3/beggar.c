@@ -1,27 +1,6 @@
 #include "beggar.h"
 #include "shuffle.h" // needed for Richard wrote shuffling using GSL.
 
-typedef struct card
-{
-    int val;
-    struct card *nextCard;
-    struct card *prevCard;
-} CARD;
-
-typedef struct player
-{
-    int id;
-    struct card *top;
-    struct card *bottom;
-} PLAYER;
-
-typedef struct pile
-{
-    struct card *top;
-} PILE;
-
-CARD* gen_cards(int*, int);
-
 int main()
 {
     // Creating a deck of cards
@@ -44,108 +23,84 @@ int beggar(int Nplayers, int *deck, int talkative)
     int i;
     int j;
 
-    // creating CARD deck
-    CARD playing_deck[52];
-    for(i = 0; i < 52; i++)
-        playing_deck[i].val = deck[i];
-
     // creating players
-    PLAYER players[Nplayers];
+    PLAYER* players = (PLAYER*)malloc(sizeof(PLAYER)*Nplayers);
     for(i = 0; i < Nplayers; i++)
+    {
         players[i].id = i;
-
-    // dealing out cards
-    for(i = 0; i < Nplayers; i++) // setting bottom and top pointers
-    {
-        players[i].bottom = &playing_deck[i];
-        players[i].bottom->prevCard = NULL;
-        players[i].top = &playing_deck[i];
-    }
-    for(; i < (52 - Nplayers); i++) // dealing out the bulk of the cards
-    {
-        CARD* temp = players[i % Nplayers].top;
-        players[i % Nplayers].top->nextCard = &playing_deck[i];
-        players[i % Nplayers].top = &playing_deck[i];
-        // setting previous card to (previous) top
-        players[i % Nplayers].top->prevCard = temp;
-    }
-    for(; i < 52; i++) // setting the remaining cards and nextCard pointer to null
-    {
-        CARD* temp = players[i % Nplayers].top;
-        players[i % Nplayers].top->nextCard = &playing_deck[i];
-        players[i % Nplayers].top = &playing_deck[i];
-        players[i % Nplayers].top->prevCard = temp;
-        players[i % Nplayers].top->nextCard = NULL;
+        players[i].head = NULL;
     }
 
-
-    // MAIN GAME PLAY
-    int count = 0;
-    int* pile = (int *)malloc(sizeof(int) * 52);
-    int* start_pile = pile;
-    int* end_pile = pile;
-
-    while(1)
-    {
-        if(*end_pile == 11) //jack
-        {
-            printf("TESTING\n");
-            *end_pile = players[count % Nplayers].top->val;
-            CARD* to_add = gen_cards(pile, ((end_pile - start_pile) / sizeof(int)));
-            end_pile = pile;
-
-            // adding the cards to the back of the player befores hand
-            CARD top_of_pile;
-            while(!(to_add->nextCard == NULL))
-                to_add++;
-
-            players[(count % Nplayers)-1].bottom->prevCard = to_add;
-            count++;
-            continue;
-        }
-        else if(*end_pile == 12) //queen
-        {
-
-        }
-        else if(*end_pile == 13) //king
-        {
-
-        }
-        else if(*end_pile == 14) //ace
-        {
-
-        }
-        end_pile++;
-
-        // adding cards to pile 
-        *end_pile = players[count % Nplayers].top->val;
-
-        // removing card from player hand
-        players[count % Nplayers].top = players[count % Nplayers].top->prevCard;
-        players[count % Nplayers].top->nextCard = NULL;
-
-        if(players[count % Nplayers].top == players[count % Nplayers].bottom)
-        {
-            printf("GAME OVER!\n");
-            break;
-        }
-        
-        count++;
-    }
-
+    // for each card in deck append to players
+    for(i = 0; i < 52; i++)
+        append(&(players[i % Nplayers].head), deck[i]);
+    
     return 0;
 }
 
-CARD* gen_cards(int* pile, int len)
+void append(CARD** head, int val)
 {
-    CARD* cards = (CARD *)malloc(len * sizeof(CARD));
-    int i;
-    for(i = 0; i < len; i++)
-        cards[i].val = *pile++;
+    // allocate new card
+    CARD* new_card = (CARD *)malloc(sizeof(CARD));
 
+    CARD* last = *head;
+    
+    new_card->val = val;
+    new_card->nextCard = NULL;
+
+    // If the list is empty make the new node as head
+    if(*head == NULL)
+    {
+        new_card->prevCard = NULL;
+        *head = new_card;
+        return;
+    }
+
+    // Else traverse the list until the last node
+    while(last->nextCard != NULL)
+        last = last->nextCard;
+
+    // change the next node of last node, and set new nodes prev
+    last->nextCard = new_card;
+    new_card->prevCard = last;
+
+    return;
+}
+
+void push(CARD** head, int val)
+{
+    // allocate node
+    CARD* new_card = (CARD *)malloc(sizeof(CARD));
+
+    new_card->val = val;
+
+    new_card->nextCard = (*head);
+    new_card->prevCard = NULL;
+    
+    // make the old heads previous new_card if head is not null
+    if((*head) != NULL)
+        (*head)->prevCard = new_card;
+
+    (*head) = new_card;
+}
+
+CARD* gen_cards(int* start, int* end)
+{
+    CARD* cards = (CARD *)malloc((end - start));
+    CARD* card_ptr = cards;
+
+    printf("Start val: %d    end val: %d\n", *start, *end);
+
+    for(;start < end;)
+        card_ptr++->val = *start++;
+    
+    int len = (end - start);
+    printf("LEN VALUE: %d\n", len);
     cards[0].prevCard = NULL;
     cards[0].nextCard = &cards[1];
-    for(i = 1; i < len - 1; i++)
+
+    int i;
+    for(i = 1; i < (len - 1); i++)
     {
         cards[i].prevCard = &cards[i-1];
         cards[i].nextCard = &cards[i+1];
@@ -153,5 +108,23 @@ CARD* gen_cards(int* pile, int len)
     cards[len-1].prevCard = &cards[len-2];
     cards[len-1].nextCard = NULL;
 
+    card_ptr = cards;
+    for(i = 0; i < len; i++)
+        printf("TESTING GEN CARDS: %d\n", card_ptr++->val);
+
     return cards;
+}
+
+int is_special(int* card)
+{
+    if(*card == 11)
+        return 1;
+    else if(*card == 12)
+        return 2;
+    else if(*card == 13)
+        return 3;
+    else if(*card == 14)
+        return 4;
+
+    return 0;
 }
