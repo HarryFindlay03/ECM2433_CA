@@ -43,7 +43,6 @@ int beggar(int Nplayers, int *deck, int talkative)
     int count = 0;
     while(1)
     {
-        printf("Player [%d] playing\n", count % Nplayers);
         int penalty;
         if(pile->head != NULL)
             penalty = is_special(pile->head->val);
@@ -67,11 +66,20 @@ int beggar(int Nplayers, int *deck, int talkative)
         if(penalty)
         {
             // adding cards to previous player (player who played the penalty card)
-            append_pile(&(players[(count-1) % Nplayers].head), pile->head);
-            printf("Player [%d] penalised\n", count % Nplayers);
+            PILE* temp_head = pile; // for clearing the pile later
             
-            // clearing the pile
+            while(pile->head->nextCard != NULL)
+            {
+                append(&(players[(count - 1) % Nplayers].head), pile->head->val);
+                pile->head = pile->head->nextCard;
+            }
 
+            // clear the pile
+            while(temp_head->head->nextCard != NULL)
+            {
+                delete_node(&(temp_head->head), temp_head->head);
+            }
+            
             count--;
             continue;
         }
@@ -171,6 +179,19 @@ void delete_node(CARD** head, CARD* del)
 
     free(del);
     return;
+}
+
+void output(PILE* pile, PLAYER* players, int Nplayers)
+{
+    printf("Pile:   ");
+    if(pile->head == NULL)
+        return;
+    while(pile->head->nextCard != NULL)
+    {
+        printf(" ,%d", pile->head->val);
+        pile->head = pile->head->nextCard;
+    }
+    printf("\n");
 }
 
 int is_special(int card)
