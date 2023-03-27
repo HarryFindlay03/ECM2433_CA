@@ -5,15 +5,6 @@ int main(int argc, char** argv)
     int i;
     int Nplayers;
     int games;
-
-    // creating deck to play with
-    int deck[52];
-    int* deck_ptr = deck;
-    for(i = 0; i < 52; i++)
-        *deck_ptr++ = (i % 13) + 2; // 52 card deck, 2-14 in each suit.
-
-    // gsl install needed for this function 
-    // shuffle(deck, 52, time(0));
     
     if(argc > 2)
     {
@@ -54,7 +45,7 @@ STAT* statistics(int Nplayers, int games)
         *deck_ptr++ = (i % 13) + 2; // 52 card deck, 2-14 in each suit.
 
     // gsl install needed for this function 
-    // shuffle(deck, 52, time(0));
+    shuffle(deck, 52, time(0));
     
     int* stats = (int*)malloc(sizeof(int)*games);
     int* ptr = stats;

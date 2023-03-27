@@ -16,7 +16,7 @@ int main(int argc, char** argv)
         *deck_ptr++ = (i % 13) + 2; // 52 card deck, 2-14 in each suit.
 
     // gsl library install needed for this
-    // shuffle(deck, 52,  time(0));
+    shuffle(deck, 52,  time(0));
 
     int result = beggar(num_players, deck, 1);
     
