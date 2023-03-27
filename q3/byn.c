@@ -43,14 +43,14 @@ STAT* statistics(int Nplayers, int games)
     int* deck_ptr = deck;
     for(i = 0; i < 52; i++)
         *deck_ptr++ = (i % 13) + 2; // 52 card deck, 2-14 in each suit.
-
-    // gsl install needed for this function 
-    shuffle(deck, 52, time(0));
     
     int* stats = (int*)malloc(sizeof(int)*games);
     int* ptr = stats;
     for(i = 0; i < games; i++)
+    {
+        shuffle(deck, 52, time(0));
         stats[i] = beggar(Nplayers, deck, 0);
+    }
 
     // finding smallest
     int smallest = *ptr;
@@ -71,7 +71,7 @@ STAT* statistics(int Nplayers, int games)
     // finding largest
     ptr = stats;
     int largest = *ptr;
-    for(i = 0; i < games; i++)
+    for(i = 0; i < games; i++, ptr++)
     {
         if(*ptr > largest)
             largest = *ptr;
