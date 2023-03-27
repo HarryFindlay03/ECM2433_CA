@@ -1,23 +1,6 @@
 #include "beggar.h"
 #include "shuffle.h" // needed for Richard wrote shuffling using GSL.
 
-int main()
-{
-    // Creating a deck of cards// Creating a deck of cards
-    int deck[52];
-
-    int i;
-    int* deck_ptr = deck;
-    for(i = 0; i < 52; i++)
-        *deck_ptr++ = (i % 13) + 2; // 52 card deck, 2-14 in each suit.
-
-    // gsl library install needed for this
-    // shuffle(deck, 52,  time(0));
-
-    int result = beggar(5, deck, 1);
-
-}
-
 int beggar(int Nplayers, int *deck, int talkative)
 {
     int i;
@@ -41,6 +24,7 @@ int beggar(int Nplayers, int *deck, int talkative)
 
     // MAIN GAMEPLAY
     int count = 0;
+    int rounds = 0;
     int penalty;
     while(1)
     {
@@ -92,8 +76,7 @@ int beggar(int Nplayers, int *deck, int talkative)
 
             if(players[count % Nplayers].head == NULL)
             {
-                printf("GAME OVER\n");
-                return 0;
+                return rounds;
             }
 
         }
@@ -104,7 +87,6 @@ int beggar(int Nplayers, int *deck, int talkative)
             // adding cards to previous player (player who played the penalty card)
             PILE* temp_head = pile; // for clearing the pile later
 
-            printf("Player who played penalty card: %d\n",(count - 1) % Nplayers);
             while(pile->head->nextCard != NULL)
             {
                 append(&(players[(count - 1) % Nplayers].head), pile->head->val);
@@ -119,6 +101,7 @@ int beggar(int Nplayers, int *deck, int talkative)
                 delete_node(&(temp_head->head), temp_head->head);
             }
             pile->head = NULL;
+            rounds += 1;
             continue;
         }
 
@@ -130,13 +113,13 @@ int beggar(int Nplayers, int *deck, int talkative)
 
         if(players[count % Nplayers].head == NULL)
         {
-            printf("GAME OVER on player [%d]\n", count % Nplayers);
             break;
         }
         count++;
+        rounds += 1;
     }
 
-    return 0;
+    return rounds;
 }
 
 void append(CARD** head, int val)

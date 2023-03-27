@@ -11,7 +11,7 @@ int main()
 
     int go = 1;
     while(go) {
-        char str[80]; 
+        char str[250]; 
 
         printf("Enter text to convert to piglatin (press return to exit): ");
         fgets(str, sizeof(str), stdin);

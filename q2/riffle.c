@@ -131,11 +131,13 @@ int check_shuffle(void* L, int len, int size, int (*cmp)(void *, void *))
     return same;
 }
 
-int cmp_ints(int* first, int* second)
+int cmp_ints(void* first, void* second)
 {
-    if(*first == *second)
+    int* f = first;
+    int* s = second;
+    if(*f == *s)
         return 0;
-    else if(*first > *second)
+    else if(*f > *s)
         return 1;
     else
         return -1;
